@@ -126,4 +126,23 @@ for (int i = scores.size() - 1; i >= 0 ; i--) {
 
 成功运行！
 
- 
+### 注意：
+
+当`scores.size()`替换为`10`或者是具体的数字使，将会使代码无法运行，错误例如：
+
+```java
+for (int i = 0; i < 10; i++) {
+    System.out.println(i + ":" + socers.size());
+    if (socers.get(i) < 60) {
+        socers.remove(i);
+        i--;
+    }
+}
+
+Exception in thread "main" java.lang.IndexOutOfBoundsException: Index: 3, Size: 3
+	at java.util.ArrayList.rangeCheck(ArrayList.java:659)
+	at java.util.ArrayList.get(ArrayList.java:435)
+	at ArrayList.Test.main(Test.java:18)
+```
+
+错误显示为：`IndexOutOfBoundsException`，是因为当以定值为循环判定条件时进行添加或删除操作时，列表的长度在变化，size()也在变化，但是循环条件是不变，所以就会出现该错误。假设该数列有一个值小于60，结果应该做**10**次循环，但是如果循环判定条件设置的是`i < 常数`就会做**11**次循环，导致index out of。
