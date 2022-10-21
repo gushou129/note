@@ -45,11 +45,14 @@ ABCD
 有区别：
 
 1.  用""创建的相同内容的String对象只会存在一个
-<b>因为""创造的对象在字符串常量池中</b>
+**因为""创造的对象在堆内存的字符串常量池中**
 ``` java
 String s1 = new String("s1");
 String s2 = "s1";
-String s3 = s1;        System.out.println(System.identityHashCode(s1));    System.out.println(System.identityHashCode(s2));    System.out.println(System.identityHashCode(s3));
+String s3 = s1;        
+System.out.println(System.identityHashCode(s1));
+System.out.println(System.identityHashCode(s2));
+System.out.println(System.identityHashCode(s3));
 ///*$Out:
 312714112
 312714112
@@ -59,7 +62,7 @@ String s3 = s1;        System.out.println(System.identityHashCode(s1));    Syste
 ![](https://jam-note-img.oss-cn-hangzhou.aliyuncs.com/leanote-img/20221014100824.png)
 
 2.用new创建的相同内容的String对象只会存在一个
-<b>用new创造的对象放在堆内存中</b>
+**用new创造的对象放在堆内存中**
 ``` java
 String s1 = new String("s2");
 String s2 = new String("s2");
