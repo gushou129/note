@@ -72,6 +72,10 @@ String s3 = s1;        System.out.println(System.identityHashCode(s1));    Syste
 ```
 ![](https://jam-note-img.oss-cn-hangzhou.aliyuncs.com/leanote-img/20221014100940.png)
 
+## "=="与equals()的区别
+
+“==”用来判断基础类型或对象的地址是否相同，equals()用来判断字符串内容的是否相同
+
 ## String API
 ```java
 // public char  charAt(int index): get index char
