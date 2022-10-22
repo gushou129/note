@@ -1,3 +1,10 @@
+---
+categories: 
+- 变成自己的话
+tags: 
+- java
+---
+
 # ArrayList注意事项
 
 ## 泛型

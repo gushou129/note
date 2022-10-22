@@ -1,3 +1,10 @@
+---
+categories: 
+- 变成自己的话
+tags: 
+- java
+---
+
 # String注意事项
 
 ## String是不可变字符串
