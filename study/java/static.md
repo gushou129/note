@@ -80,3 +80,75 @@ public class Tools {
 }
 ```
 
+### 修饰代码块
+
+当静态资源需要进行初始化时，建议使用静态代码块进行数据初始化。不仅方便调试，也提高了代码可读性，如：
+
+```java
+public class Cards {
+    public static ArrayList<String> cards = new ArrayList<>();
+
+    static {
+        // 准备点数
+        String[] sizes = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+        // 准备花色
+        String[] colors = {"♥️", "♦️", "♠️", "♣️"};
+        // 组装添加
+        for (int i = 0; i < sizes.length; i++) {
+            for (int i1 = 0; i1 < colors.length; i1++) {
+                String s = colors[i1] + sizes[i];
+                cards.add(s);
+            }
+        }
+        // 添加大小王
+        cards.add("joker");
+        cards.add("JOKER");
+    }
+}
+```
+
+### 单例设计模式
+
+#### 是什么，像什么，有什么用
+
+这个类永远只有一个实例，即永远只能创建一个对象。
+“书同文，车同轨”，全国统一的北京时间，只需要一个时间，用以同步全国的火车高铁。
+用以统一标准，或者
+
+#### 如何创建
+
+##### 饿汉单例
+```java
+public class SingleInstance {
+    // 1。 构造器私有化
+    private SingleInstance(){}
+    // 2。 在单例内部创建静态对象
+    public static SingleInstance si = new SingleInstance();
+}
+```
+
+##### 懒汉单例
+```java
+public class SingleInstance {
+    // 1。 构造器私有化
+    private SingleInstance(){}
+    // 2。 在单例内部创建对象容器
+    private static SingleInstance si;
+    // 3。 必须提供一个方法用来返回对象
+    public static SingleInstance getInstance() {
+        if (si == null) {
+            si = new SingleInstance();
+        }
+        return si;
+    }
+}
+```
+
+###### 相同点
+
+均需要将构造器私有化防止用户调用构造器创建对象。
+
+###### 不同点
+
+饿汉在类内部直接创建单例，方便调用；懒汉首先将对象容器私有化，防止用户使用到无效对象（`null`），再在其内部创建静态方法用来返回单例。
+
