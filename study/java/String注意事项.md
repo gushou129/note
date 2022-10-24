@@ -40,7 +40,7 @@ System.out.println(s3);
 byte[] bytes = {65, 66, 67, 68};
 String s4 = new String(bytes);
 System.out.println(s4);
-///*$Out:
+/*$Out:
 
 s2
 chars
