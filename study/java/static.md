@@ -118,6 +118,9 @@ public class Cards {
 #### 如何创建
 
 ##### 饿汉单例
+
+特点：直接创建静态对象。
+
 ```java
 public class SingleInstance {
     // 1。 构造器私有化
@@ -128,6 +131,9 @@ public class SingleInstance {
 ```
 
 ##### 懒汉单例
+
+特点：使用静态方法返回静态对象。
+
 ```java
 public class SingleInstance {
     // 1。 构造器私有化

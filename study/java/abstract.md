@@ -10,7 +10,7 @@
 
 ## 注意
 
-抽象类无法创建实例对象。
+<span style="color:red;">抽象类无法创建实例对象。</span>
 
 ### 为什么
 
@@ -90,6 +90,7 @@ public abstract class Card {
 
         System.out.println("请输入您的消费：");
         double amount = sc.nextDouble();
+        
         //在此处调用了抽象方法 getDiscount()
         double discountPrice = amount * getDiscount();
         System.out.println("您的折扣价为：" + discountPrice);

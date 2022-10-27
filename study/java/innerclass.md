@@ -34,3 +34,45 @@ Animer a = new Animer(){
 - 方便创建子类对象，简化代码；
 - 匿名类的类型就是匿名；
 - 匿名对象的父类是所匿名的那个类。
+### Lambda
+
+- 只有函数式接口才可使用匿名内部类表达式；
+- 通常的使用`@FunctionalInterface`作为函数式接口的注解。
+
+简化后的代码：
+
+```java
+run(() -> {
+    // do something
+})
+```
+
+比如：
+```java
+Arrays.sort(ages, (Integer o1, Integer o2) -> {
+    return o1 - o2;
+});
+```
+
+```java
+Arrays.sort(ages, (o1, o2) -> {
+    return o1 - o2;
+});
+```
+
+```java
+Arrays.sort(ages, (o1, o2) -> o1 - o2);
+```
+
+
+```java
+btn.addActionListener(e -> {
+    System.out.println();
+});
+```
+
+```java
+btn.addActionListener(e -> System.out.println());
+```
+
+

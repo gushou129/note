@@ -15,7 +15,7 @@ str += "+str2";
 str += "+str3";
 ```
 
-当你用String类new出一个对象并赋值时，该对象的数据就已经不能修改了，之后所有对该对象的修改操作都是在原数据的基础上重新创建一个新对象并将结果给其赋值的操作。
+当你用String类new出一个对象并赋值或者引用一个字符串时，该对象的数据就已经不能修改了，之后所有对该对象的修改操作都是在原数据的基础上重新创建一个新对象并将结果给其赋值的操作。
 
 
 ![](https://jam-note-img.oss-cn-hangzhou.aliyuncs.com/leanote-img/20221014092209.png)
@@ -73,7 +73,8 @@ System.out.println(System.identityHashCode(s3));
 ``` java
 String s1 = new String("s2");
 String s2 = new String("s2");
-String s3 = s1;        System.out.println(System.identityHashCode(s1));    System.out.println(System.identityHashCode(s2));  System.out.println(System.identityHashCode(s3));
+String s3 = s1;
+System.out.println(System.identityHashCode(s1));    System.out.println(System.identityHashCode(s2));  System.out.println(System.identityHashCode(s3));
 ///*$Out:
 312714112
 692404036
@@ -125,9 +126,9 @@ System.out.println("s1 + s2 + s3 \t == \"abc\"\t\t\t:" + (s4 == s6));
 System.out.println("\"a\" + \"b\" + \"c\"  == \"abc\"\t\t\t:" + (s5 == s6));
 System.out.println("s1 + s2 + s3 \t == \"a\" + \"b\" + \"c\" :" + (s4 == s5));
 ///*$Out:
-s1 + s2 + s3 	 == "abc"			:false
-"a" + "b" + "c"  == "abc"			:true
-s1 + s2 + s3 	 == "a" + "b" + "c" :false
+s1 + s2 + s3 	 == "abc"		:false
+"a" + "b" + "c"  == "abc"	        :true
+s1 + s2 + s3 	 == "a" + "b" + "c"     :false
 */
 ```
 

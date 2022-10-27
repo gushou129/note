@@ -52,7 +52,7 @@ class student extends people{}
 
 如果可以多继承，那么当多个父类中存在相同成员变量/方法时无法进行正常的操作，造成错误。
 
-### 多级继承
+### 多层继承
 
 class A -> class B -> class C
 
