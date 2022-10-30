@@ -30,6 +30,9 @@ classDiagram
         -String name
         -String actor
         -String time
+        -String showTime
+        -Date showTime
+        +String getShowTime()
     }
     class SystemManager{
         +void showController()
