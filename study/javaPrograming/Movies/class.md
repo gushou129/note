@@ -16,7 +16,16 @@ classDiagram
         +void setMovie()
         +void removeMovie()
         +void changeMovieDetails()
+
     }
+    class aboutMoney{
+        -double price
+        -double price;
+        -int allTicketNumber;
+        -int sellTicketNumber;
+        -int leftTicketNumber;
+    }
+    
     class Customer{
         +void search()
         +void comment()
