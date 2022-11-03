@@ -216,10 +216,10 @@ byte --> a[InputStream]
 byte --> b[OutputStream]
 char --> c[Reader]
 char --> d[Writer]
-a --> A[FileInputStream]
-b --> B[FileOutPutStream]
-c --> C[FileReader]
-d --> D[FileWriter]
+a --- A[FileInputStream]
+b --- B[FileOutPutStream]
+c --- C[FileReader]
+d --- D[FileWriter]
 subgraph 抽象类
 a
 b
@@ -233,6 +233,7 @@ C
 D
 end
 ```
+
 
 ## 字节流的使用
 

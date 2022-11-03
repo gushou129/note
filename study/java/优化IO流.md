@@ -12,14 +12,20 @@ byte --> a[InputStream]
 byte --> b[OutputStream]
 char --> c[Reader]
 char --> d[Writer]
-a --> A[FileInputStream]
-b --> B[FileOutPutStream]
-c --> C[FileReader]
-d --> D[FileWriter]
-A --> q[BufferedInputStream]
-B --> w[BufferedOutputStream]
-C --> e[BufferedReader]
-D --> r[BufferedWriter]
+a --- A[FileInputStream]
+b --- B[FileOutPutStream]
+c --- C[FileReader]
+d --- D[FileWriter]
+A --- q[BufferedInputStream]
+B --- w[BufferedOutputStream]
+C --- e[BufferedReader]
+D --- r[BufferedWriter]
+q --- Q[ObjectInputStream]
+w --- W[ObjectOutputStream]
+e --- E[InputStreamReader]
+r --- R[OutputStreamWrite]
+W --- PrintStream
+R --- PrintWriter
 subgraph 抽象类
 a
 b
@@ -37,6 +43,16 @@ q
 w
 e
 r
+end
+subgraph 序列化
+Q
+W
+E
+R
+end
+subgraph 打印流
+PrintStream
+PrintWriter
 end
 ```
 
@@ -129,18 +145,20 @@ byte --> a[InputStream]
 byte --> b[OutputStream]
 char --> c[Reader]
 char --> d[Writer]
-a --> A[FileInputStream]
-b --> B[FileOutPutStream]
-c --> C[FileReader]
-d --> D[FileWriter]
-A --> q[BufferedInputStream]
-B --> w[BufferedOutputStream]
-C --> e[BufferedReader]
-D --> r[BufferedWriter]
-q --> Q[ObjectInputStream]
-w --> W[ObjectOutputStream]
-e --> E[InputStreamReader]
-r --> R[OutputStreamWrite]
+a --- A[FileInputStream]
+b --- B[FileOutPutStream]
+c --- C[FileReader]
+d --- D[FileWriter]
+A --- q[BufferedInputStream]
+B --- w[BufferedOutputStream]
+C --- e[BufferedReader]
+D --- r[BufferedWriter]
+q --- Q[ObjectInputStream]
+w --- W[ObjectOutputStream]
+e --- E[InputStreamReader]
+r --- R[OutputStreamWrite]
+W --- PrintStream
+R --- PrintWriter
 subgraph 抽象类
 a
 b
@@ -165,7 +183,12 @@ W
 E
 R
 end
+subgraph 打印流
+PrintStream
+PrintWriter
+end
 ```
+
 序列化是指将程序执行时创建的对象存储在磁盘中，以便下次使用。
 
 **注意**：只有实现了`java.io.Serializable`接口的类才能被序列化。
