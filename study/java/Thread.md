@@ -9,9 +9,9 @@
 
 ### 并行与并发
 
-并行与串行的区别，是在cpu个数的多少，并行使用多个cpu处理串行处理多列任务，串行使用单个cpu处理单列任务。
+并行与串行的区别，是在 cpu 个数的多少，并行使用多个 cpu 处理串行处理多列任务，串行使用单个 cpu 处理单列任务。
 
-并发与串行的区别，是要执行的程序列数的多少，并发使用单个cpu处理多列任务，串行使用单个cpu处理单列任务。
+并发与串行的区别，是要执行的程序列数的多少，并发使用单个 cpu 处理多列任务，串行使用单个 cpu 处理单列任务。
 
 并行：存在于多核，多列串行；
 并发：存在于单核，多列交替执行；
@@ -128,6 +128,7 @@ Public void setName(String s);
 使用代码表现是这样的：
 
 ### 同步代码块
+
 ```java
 // synchronized{} 描述相当于是一个厕所
 // door 代表厕所门
@@ -140,6 +141,7 @@ synchronized (door){
 或者
 
 ### 同步方法
+
 ```java
 // 使用 synchronized 修饰方法即可
 public synchronized void takeAShit();
@@ -148,6 +150,7 @@ public synchronized void takeAShit();
 再或者
 
 ### Lock
+
 ```java
 // l相当于门锁，加final是表示这把锁只有一把钥匙
 private final Lock l = new ReentrantLock();
@@ -164,11 +167,12 @@ try {
 
 ## 线程通信
 
-问题：现有3个生产者与2个消费者，生产者生产商品放入仓库，消费者消费商品从仓库取出，当仓库中的商品小于100时生产者生产商品，大于等于100时消费者消费商品，模拟过程。
+问题：现有 3 个生产者与 2 个消费者，生产者生产商品放入仓库，消费者消费商品从仓库取出，当仓库中的商品小于 100 时生产者生产商品，大于等于 100 时消费者消费商品，模拟过程。
 
 分析：至少需要定义三个类生产者、消费者、仓库。检测商品数使用`if`判断，同步线程使用`synchronized`保证线程安全，<span style="color:red">暂时使用</span>`sleep()`等待同步。
 
 仓库：
+
 ```java
 public class Count {
   private double money;
@@ -184,62 +188,45 @@ public class Count {
 ```
 
 生产者：
+
 ```java
 pubulic static int i;
-public void produce() {
-  synchronized (c) {
+public synchronized void produce() {
     try {
       while (true) {
-        if (c.getMoney() != Count.NUM) {
+        if (c.getMoney() < Count.NUM) {
           c.setMoney(c.getMoney() + 1);
           i++;
-          Thread.sleep(15);
-          // c.notifyAll();
-          // c.wait();
-        } 
-        // else {
-        //   c.notifyAll();
-        //   c.wait();
-        // }
+        }
+        Thread.sleep(15);
       }
     } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
-  }
 }
 ```
 
 消费者：
+
 ```java
 pubulic static int i;
-public void consume() {
-  synchronized (c) {
+public synchronized void consume() {
     try {
       while (true) {
-        Thread.sleep(30);
-        if (c.getMoney() == Count.NUM) {
+        if (c.getMoney() >= Count.NUM) {
           c.setMoney(c.getMoney() - 1);
           i++;
-          Thread.sleep(15);
-          // c.notifyAll();
-          // c.wait();
-        } 
-        // else {
-        //   c.notifyAll();
-        //   c.wait();
-        // }
         }
+        Thread.sleep(15);
       }
     } catch (InterruptedException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
-}
 ```
 
 为了方便观察使用`Monitor`输出数据。
+
 ```java
 @Override
 public void run() {
@@ -258,9 +245,140 @@ public void run() {
 
 运行结果基本正常，如果将等待进程的方式切换为`wait()`也可以使程序正常运行，那么使用`sleep()`与`wait()`的区别在哪里呢？
 
-### sleep()
+使用`sleep()`进行线程间通讯：
 
+消费者与生产者的抽象父类：
 
+```java
+public abstract class Actor implements Runnable {
+  private Count c;
+  private String name;
+
+  public Actor(String name, Count c) {
+    this.c = c;
+    this.name = name;
+  }
+
+  public abstract boolean compare();
+
+  public abstract void plus();
+
+  public void canDo() {
+    synchronized (c) {
+      try {
+        while (true) {
+          if (compare()) {
+            plus();
+            c.notifyAll();
+            c.wait();
+          } else {
+            c.notifyAll();
+            c.wait();
+          }
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+  };
+
+  @Override
+  public void run() {
+    canDo();
+  }
+
+  public Count getC() {  return c;  }
+
+  public void setC(Count c) { this.c = c;  }
+
+  public String getName() {  return name;  }
+
+  public void setName(String name) {  this.name = name; }
+}
+```
+
+消费者：
+
+```java
+public class Consumer extends Actor {
+  public static int i = 0;
+  public Producer(String name, Count c) {
+    super(name, c);
+  }
+  @Override
+  public boolean compare() {
+    return getC().getMoney() == Count.NUM;
+  }
+
+  @Override
+  public void plus() {
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    getC().setMoney(getC().getMoney() - 1);
+    i++;
+  }
+}
+```
+
+生产者：
+
+```java
+public class Producer extends Actor {
+  public static int i = 0;
+
+  public Producer(String name, Count c) {
+    super(name, c);
+  }
+  @Override
+  public boolean compare() {
+    return getC().getMoney() != Count.NUM;
+  }
+
+  @Override
+  public void plus() {
+    getC().setMoney(getC().getMoney() + 1);
+    i++;
+  }
+}
+```
+
+![线程状态](https://jam-note-img.oss-cn-hangzhou.aliyuncs.com/leanote-img/202211082237775.png)
+
+线程共包括以下 5 种状态:
+1. **新建状态**(New): 线程对象被创建后，就进入了新建状态。例如，`Thread thread = new Thread()`。
+
+2. **就绪状态**(Runnable): 也被称为“可执行状态”。线程对象被创建后，其它线程调用了该对象的`start()`方法，从而来启动该线程。例如，`thread.start()`。处于就绪状态的线程，随时可能被CPU调度执行。
+
+3. **运行状态**(Running): 线程获取CPU权限进行执行。需要注意的是，线程只能从就绪状态进入到运行状态。
+
+4. **阻塞状态**(Blocked): 阻塞状态是线程因为某种原因放弃CPU使用权，暂时停止运行。直到线程进入就绪状态，才有机会转到运行状态。阻塞的情况分三种：
+
+   1. 等待阻塞 -- 通过调用线程的`wait()`方法，让线程等待某工作的完成。
+   2. 同步阻塞 -- 线程在获取`synchronized`同步锁失败(因为锁被其它线程所占用)，它会进入同步阻塞状态。
+   3. 其他阻塞 -- 通过调用线程的`sleep()`或`join()`或发出了I/O请求时，线程会进入到阻塞状态。当`sleep()`状态超时、`join()`等待线程终止或者超时、或者I/O处理完毕时，线程重新转入就绪状态。
+
+5. **死亡状态**(Dead): 线程执行完了或者因异常退出了`run()`方法，该线程结束生命周期。
+
+### sleep与wait的区别
+
+#### 位置
+
+`sleep()`是`Thread`类的静态方法；`wait()`是`Object`类的成员方法；
+
+#### 锁的操作
+
+`sleep()`调用后不会释放对象锁，只是将cpu让出给其他线程；`wait()`调用后会释放对象锁并进入阻塞状态`Blocked`，只有当此对象调用`notify()`后才会将此线程移入就绪状态`Runnable`；
+
+#### 同步上下文
+
+`sleep()`可以在任何地方使用但是需要异常处理，`wait()`只能在同步方法或同步代码块中使用且不需要异常处理。
+
+#### 调用机制
+
+`wait()`通常用于循环中处理不符合判断结果的情况，使该线程处于阻塞状态`Blocked`并释放对象锁等资源**直到该判断结果为真**；`sleep()`一般不用循环中处理结果，因为`sleep()`不释放对象锁资源，所以该资源会较长时间的被一个线程占用，导致其他线程无法使用该资源。
 
 
 ## 线程池
