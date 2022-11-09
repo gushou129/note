@@ -348,21 +348,22 @@ public class Producer extends Actor {
 ![线程状态](https://jam-note-img.oss-cn-hangzhou.aliyuncs.com/leanote-img/202211082237775.png)
 
 线程共包括以下 5 种状态:
+
 1. **新建状态**(New): 线程对象被创建后，就进入了新建状态。例如，`Thread thread = new Thread()`。
 
-2. **就绪状态**(Runnable): 也被称为“可执行状态”。线程对象被创建后，其它线程调用了该对象的`start()`方法，从而来启动该线程。例如，`thread.start()`。处于就绪状态的线程，随时可能被CPU调度执行。
+2. **就绪状态**(Runnable): 也被称为“可执行状态”。线程对象被创建后，其它线程调用了该对象的`start()`方法，从而来启动该线程。例如，`thread.start()`。处于就绪状态的线程，随时可能被 CPU 调度执行。
 
-3. **运行状态**(Running): 线程获取CPU权限进行执行。需要注意的是，线程只能从就绪状态进入到运行状态。
+3. **运行状态**(Running): 线程获取 CPU 权限进行执行。需要注意的是，线程只能从就绪状态进入到运行状态。
 
-4. **阻塞状态**(Blocked): 阻塞状态是线程因为某种原因放弃CPU使用权，暂时停止运行。直到线程进入就绪状态，才有机会转到运行状态。阻塞的情况分三种：
+4. **阻塞状态**(Blocked): 阻塞状态是线程因为某种原因放弃 CPU 使用权，暂时停止运行。直到线程进入就绪状态，才有机会转到运行状态。阻塞的情况分三种：
 
    1. 等待阻塞 -- 通过调用线程的`wait()`方法，让线程等待某工作的完成。
    2. 同步阻塞 -- 线程在获取`synchronized`同步锁失败(因为锁被其它线程所占用)，它会进入同步阻塞状态。
-   3. 其他阻塞 -- 通过调用线程的`sleep()`或`join()`或发出了I/O请求时，线程会进入到阻塞状态。当`sleep()`状态超时、`join()`等待线程终止或者超时、或者I/O处理完毕时，线程重新转入就绪状态。
+   3. 其他阻塞 -- 通过调用线程的`sleep()`或`join()`或发出了 I/O 请求时，线程会进入到阻塞状态。当`sleep()`状态超时、`join()`等待线程终止或者超时、或者 I/O 处理完毕时，线程重新转入就绪状态。
 
 5. **死亡状态**(Dead): 线程执行完了或者因异常退出了`run()`方法，该线程结束生命周期。
 
-### sleep与wait的区别
+### sleep 与 wait 的区别
 
 #### 位置
 
@@ -370,7 +371,7 @@ public class Producer extends Actor {
 
 #### 锁的操作
 
-`sleep()`调用后不会释放对象锁，只是将cpu让出给其他线程；`wait()`调用后会释放对象锁并进入阻塞状态`Blocked`，只有当此对象调用`notify()`后才会将此线程移入就绪状态`Runnable`；
+`sleep()`调用后不会释放对象锁，只是将 cpu 让出给其他线程；`wait()`调用后会释放对象锁并进入阻塞状态`Blocked`，只有当此对象调用`notify()`后才会将此线程移入就绪状态`Runnable`；
 
 #### 同步上下文
 
@@ -380,11 +381,99 @@ public class Producer extends Actor {
 
 `wait()`通常用于循环中处理不符合判断结果的情况，使该线程处于阻塞状态`Blocked`并释放对象锁等资源**直到该判断结果为真**；`sleep()`一般不用循环中处理结果，因为`sleep()`不释放对象锁资源，所以该资源会较长时间的被一个线程占用，导致其他线程无法使用该资源。
 
-
 ## 线程池
 
-## 定时器
+存放线程的池子，用完的线程放入，等待下次继续使用。
 
-## 并行并发
+情景：现有 1000 个用户需要使用购物系统，那么购物系统需要创建 1000 个线程来处理这 1000 个用户的操作吗？
 
-## 线程的生命周期
+通常情况下，该系统会创建一个线程池用于存放**工作线程**和**任务队列**，其中工作线程`WorkThread`就是用来处理用户操作的线程，任务队列`WorkQueue`就是这 1000 个用户的操作指令。
+
+### 实现线程池
+
+- 线程池接口：`ExecutorService`。
+- 线程池实现类：`ThreadPoolExecutor`。
+
+```java
+public ThreadPoolExecutor(
+  // 核心线程数量
+  int corPoolSize,
+  // 可创建的最大线程数量 = 核心线程数量 + 临时线程数量
+  int maximumPoolSize,
+  // 临时线程存活时间
+  long keepAliveTime,
+  // 临时线程存活时间单位（时分秒）
+  TimeUnit unit,
+  // 任务队列容器，用于缓存未处理的任务
+  BlockingQueue<Runnable> workQueue,
+  // 线程工厂，用于创建线程类型
+  ThreadFactory threadFactory,
+  // 线程负荷时的拒绝方法
+  RejectedEcecutionHandler handler
+)
+```
+
+临时线程何时创建？什么时候拒绝任务？
+
+- 临时线程只有在核心线程忙、任务队列满的情况才会创建
+- 只有当所有线程忙、任务队列满的情况才会拒绝任务
+
+通常使用多态方式创建对象。
+
+### Runnable
+
+使用`ExecutorService`中的`execute()`操作线程：
+
+```java
+public class Test {
+  public static void main(String[] args) {
+    ExecutorService pool = new ThreadPoolExecutor(3, 5, 4, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+    Runnable m = new MyRunnable();
+
+    try {
+      for (int i = 0; i < 11; i++) {
+        pool.execute(m);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+}
+class MyRunnable implements Runnable{
+  private static int i = 0;
+  @Override
+  public void run() {
+    System.out.println(Thread.currentThread().getName() + ":::" + ++MyRunnable.i);
+  }
+}
+```
+
+### Callable
+
+使用`ExecutorService`中的`submit()`操作线程：
+
+```java
+public class Test {
+  public static void main(String[] args) {
+    ExecutorService pool = new ThreadPoolExecutor(3, 5, 4, TimeUnit.SECONDS, new ArrayBlockingQueue<>(5), Executors.defaultThreadFactory(), new ThreadPoolExecutor.AbortPolicy());
+
+    try {
+      for (int i = 0; i < 11; i++) {
+        pool.submit(new MyCall());
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+}
+
+class MyCall implements Callable<String>{
+  public static int i = 0;
+  @Override
+  public String call() throws Exception {
+    return Thread.currentThread().getName() + "::::" + String.valueOf(++i);
+  }
+}
+```
+
+### Executors
