@@ -1,3 +1,10 @@
+---
+categories: 
+- 变成自己的话
+tags: 
+- java
+---
+
 # Thread
 
 ## 进程与线程

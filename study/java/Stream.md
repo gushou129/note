@@ -1,3 +1,10 @@
+---
+categories: 
+- 变成自己的话
+tags: 
+- java
+---
+
 # Stream
 
 - 简化集合与数据操作的API

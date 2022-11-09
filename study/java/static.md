@@ -1,3 +1,10 @@
+---
+categories: 
+- 变成自己的话
+tags: 
+- java
+---
+
 # static
 
 ## static是什么，像什么
