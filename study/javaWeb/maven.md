@@ -9,6 +9,7 @@ brew 默认把应用安装在`/usr/local/Cellar/maven`
 进入文件夹中的`libexec/conf`修改`setting.xml`
 
 在`mirrors`中添加：
+
 ```xml
 <mirror>
   <id>alimaven</id>
